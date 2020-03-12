@@ -1,0 +1,14 @@
+C:\Users\Juanjo\source\repos\InverseTorque\InverseTorque\bin\Release\CitizenFX.Core.dll
+C:\Users\Juanjo\source\repos\InverseTorque\InverseTorque\bin\Release\System.Reflection.Metadata.dll
+C:\Users\Juanjo\source\repos\InverseTorque\InverseTorque\bin\Release\System.Collections.Immutable.dll
+C:\Users\Juanjo\source\repos\InverseTorque\InverseTorque\bin\Release\MsgPack.dll
+C:\Users\Juanjo\source\repos\InverseTorque\InverseTorque\bin\Release\CitizenFX.Core.pdb
+C:\Users\Juanjo\source\repos\InverseTorque\InverseTorque\bin\Release\CitizenFX.Core.xml
+C:\Users\Juanjo\source\repos\InverseTorque\InverseTorque\bin\Release\MsgPack.xml
+C:\Users\Juanjo\source\repos\InverseTorque\InverseTorque\obj\Release\InverseTorque.csproj.CoreCompileInputs.cache
+C:\Users\Juanjo\source\repos\InverseTorque\InverseTorque\obj\Release\InverseTorque.csproj.CopyComplete
+C:\Users\Juanjo\source\repos\InverseTorque\InverseTorque\obj\Release\InverseTorque.csprojAssemblyReference.cache
+C:\Users\Juanjo\source\repos\InverseTorque\InverseTorque\bin\Release\InverseTorque.net.dll
+C:\Users\Juanjo\source\repos\InverseTorque\InverseTorque\bin\Release\InverseTorque.net.pdb
+C:\Users\Juanjo\source\repos\InverseTorque\InverseTorque\obj\Release\InverseTorque.net.dll
+C:\Users\Juanjo\source\repos\InverseTorque\InverseTorque\obj\Release\InverseTorque.net.pdb
