@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.757
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InverseTorqueSP", "InverseTorqueSP\InverseTorqueSP.csproj", "{89A3C32D-2584-4FC2-849F-842FAEA0187F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{89A3C32D-2584-4FC2-849F-842FAEA0187F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89A3C32D-2584-4FC2-849F-842FAEA0187F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89A3C32D-2584-4FC2-849F-842FAEA0187F}.Debug|x64.ActiveCfg = Debug|x64
+		{89A3C32D-2584-4FC2-849F-842FAEA0187F}.Debug|x64.Build.0 = Debug|x64
+		{89A3C32D-2584-4FC2-849F-842FAEA0187F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89A3C32D-2584-4FC2-849F-842FAEA0187F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89A3C32D-2584-4FC2-849F-842FAEA0187F}.Release|x64.ActiveCfg = Release|x64
+		{89A3C32D-2584-4FC2-849F-842FAEA0187F}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8CBAD688-F85D-44B9-9500-E2F9024C329B}
+	EndGlobalSection
+EndGlobal

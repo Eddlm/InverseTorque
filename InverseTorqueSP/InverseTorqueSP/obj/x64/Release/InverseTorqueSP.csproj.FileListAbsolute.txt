@@ -1,0 +1,8 @@
+C:\Users\Juanjo\source\repos\InverseTorqueSP\InverseTorqueSP\obj\x64\Release\InverseTorqueSP.csproj.CoreCompileInputs.cache
+C:\Users\Juanjo\source\repos\InverseTorqueSP\InverseTorqueSP\bin\x64\Release\ScriptHookVDotNet2.dll
+C:\Users\Juanjo\source\repos\InverseTorqueSP\InverseTorqueSP\bin\x64\Release\ScriptHookVDotNet2.xml
+C:\Users\Juanjo\source\repos\InverseTorqueSP\InverseTorqueSP\obj\x64\Release\InverseTorqueSP.csproj.CopyComplete
+C:\Users\Juanjo\source\repos\InverseTorqueSP\InverseTorqueSP\bin\x64\Release\InverseTorque.dll
+C:\Users\Juanjo\source\repos\InverseTorqueSP\InverseTorqueSP\bin\x64\Release\InverseTorque.pdb
+C:\Users\Juanjo\source\repos\InverseTorqueSP\InverseTorqueSP\obj\x64\Release\InverseTorque.dll
+C:\Users\Juanjo\source\repos\InverseTorqueSP\InverseTorqueSP\obj\x64\Release\InverseTorque.pdb
