@@ -19,13 +19,9 @@ public class InverseTorqueSP : Script
     public InverseTorqueSP()
     {
         Tick += OnTick;
-        KeyDown += OnKeyDown;
-        KeyUp += OnKeyUp;
         Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
         Settings = ScriptSettings.Load(@"scripts\InverseTorque\Options.ini");
         Scaler = Settings.GetValue<float>("SETTINGS", "Scaler", 2f);
-
-        //UI.Notify("Scaler: " + Scaler);
     }
 
 
@@ -47,8 +43,9 @@ public class InverseTorqueSP : Script
                 string m = Game.GetUserInput(5);
                 if (float.TryParse(m, out Scaler))
                 {
-                    UI.Notify("~y~Inverse Torque~w~~n~Scaler set: ~b~x" + Scaler + " ~w~ at fTractionCurveLateral");
+                    UI.Notify("~y~Inverse Torque~w~~n~Scaler set: ~b~x" + Scaler + " ~w~ at 90º");
                 }
+                else UI.Notify("~y~Inverse Torque~w~~n~Invalid value: ~o~" + m);
             }
 
         }
@@ -56,57 +53,28 @@ public class InverseTorqueSP : Script
         if (!Settings.GetValue<bool>("SETTINGS", "Enabled", true)) return;
 
         Vehicle v = Game.Player.Character.CurrentVehicle;
-        if (CanWeUse(v)  && v.Driver == Game.Player.Character && v.Model.IsCar) {
-            float trcurve = rad2deg(GetTRCurveLat(v));
+        if (CanWeUse(v)  && v.Driver == Game.Player.Character && v.Model.IsCar &&v.CurrentGear>0) {
+            
+            float grip= Function.Call<float>((Hash)0xA132FB5370554DB0, v);
             float angle = Vector3.Angle(v.ForwardVector, v.Velocity.Normalized);
-            float mult = (float)Math.Round(map(angle, trcurve*0.1f, trcurve*0.5f, 1f, Scaler, true), 2);
+            float mult = 0f;
+            if (angle < 90f)
+            {
+                mult = (float)Math.Round(map(angle, 5f, 90f, 1f, Scaler * grip, true), 2);
+            }
+            else
+            {
+                mult = (float)Math.Round(map(angle, 180f, 90f, 1f, Scaler * grip, true), 2);
+            }
+            mult *= map(v.Velocity.Length(), 0, 5, 0, 1, true);
 
             if (mult > 1f) v.EngineTorqueMultiplier = mult; 
-            if(InverseTorqueDebug) if(mult>1.0f) UI.ShowSubtitle("Angle: "+Math.Round(angle,1)+ "º /"+trcurve+"º~n~~b~x" + mult.ToString(), 500); else UI.ShowSubtitle("Angle: " + Math.Round(angle, 1) + "º /" + trcurve + "º~n~~w~x" + mult.ToString(), 500);
+            if(InverseTorqueDebug) if(mult>1.0f) UI.ShowSubtitle("Angle: "+Math.Round(angle,1)+ "º ~n~~b~x" + mult.ToString(), 500); else UI.ShowSubtitle("Angle: " + Math.Round(angle, 1) + "º ~n~~w~x" + mult.ToString(), 500);
 
         }
     }
 
-
-    public static unsafe ulong GetHandlingPtr(Vehicle v)
-    {
-        if (!CanWeUse(v)) return (ulong)0;
-
-        var address = (ulong)v.MemoryAddress;
-        ulong offset = 0x918;
-        return *((ulong*)(address + offset));
-    }
-    public static float rad2deg(float rad)
-    {
-        return (rad * (180.0f / (float)Math.PI)); //3.14159265358979323846264338327950288f));
-    }
-
-    public static unsafe float GetTRCurveLat(Vehicle v)
-    {
-
-        if (!CanWeUse(v)) return 0f;
-        ulong handlingAddress = GetHandlingPtr(v);
-        ulong tractionCurveMaxOffset = 0x0098;
-        if (handlingAddress < 1) return 0f;
-        float result = *(float*)(handlingAddress + tractionCurveMaxOffset);
-        return result;
-    }
-    void OnKeyDown(object sender, KeyEventArgs e)
-    {
-
-    }
-    void OnKeyUp(object sender, KeyEventArgs e)
-    {
-
-    }
-    protected override void Dispose(bool dispose)
-    {
-
-
-        base.Dispose(dispose);
-    }
-
-
+    
     public static float map(float x, float in_min, float in_max, float out_min, float out_max, bool clamp = false)
     {
 
@@ -123,32 +91,6 @@ public class InverseTorqueSP : Script
     }
     
     
-
-    public unsafe static byte* FindPattern(string pattern, string mask)
-    {
-        ProcessModule module = Process.GetCurrentProcess().MainModule;
-
-        ulong address = (ulong)module.BaseAddress.ToInt64();
-        ulong endAddress = address + (ulong)module.ModuleMemorySize;
-
-        for (; address < endAddress; address++)
-        {
-            for (int i = 0; i < pattern.Length; i++)
-            {
-                if (mask[i] != '?' && ((byte*)address)[i] != pattern[i])
-                {
-                    break;
-                }
-                else if (i + 1 == pattern.Length)
-                {
-                    return (byte*)address;
-                }
-            }
-        }
-
-        return null;
-    }
-
 
     /// TOOLS ///
     void LoadSettings()

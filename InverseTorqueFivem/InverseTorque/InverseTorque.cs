@@ -21,16 +21,34 @@ namespace InverseTorque
         {
             if (GetCurrentResourceName() != resourceName) return;
 
-            RegisterCommand("ittorque", new Action<int, List<object>, string>((source, args, raw) => {
+            RegisterCommand("itlaunch", new Action<int, List<object>, string>((source, args, raw) => {
                 if (args.Any())
                 {
-                    float.TryParse(args.First().ToString(), out MaxTorqueMult);
-                    Notify("~b~[InverseTorque]~w~: Max Torque Multiplier set to " + MaxTorqueMult);
+                    if (args.First().ToString() == "on") LaunchControl = true;
+                    if (args.First().ToString() == "off") LaunchControl = false;
+                }
+                else
+                {
+                    LaunchControl = !LaunchControl;
+                }
+
+                if (LaunchControl) Notify("~b~[InverseTorque]~w~: LaunchControl is ~g~on."); else Notify("~b~[InverseTorque]~w~: LaunchControl is ~o~off.");
+
+            }), false);
+            RegisterCommand("itscale", new Action<int, List<object>, string>((source, args, raw) => {
+                if (args.Any())
+                {
+                    float.TryParse(args.First().ToString(), out torqueMult);
+                    Notify("~b~[InverseTorque]~w~: Torque Multiplier set to ~g~" + torqueMult);
                 }
             }), false);
-            TriggerEvent("chat:addSuggestion", "/ittorque", "Ex: /ittorque 4 - Sets the max multiplier for InverseTorque.", new[]
+            TriggerEvent("chat:addSuggestion", "/itscale", "Ex: /itscale 4 - Sets the multiplier at 90º for InverseTorque.", new[]
             {
                 new { name="X", help="Decimals like 2.5 are allowed." },
+            });
+            TriggerEvent("chat:addSuggestion", "/itlaunch", "Ex: /itlaunch on/off - Toggles launch control.", new[]
+{
+                new { name="X", help="on / off" },
             });
         }
 
@@ -41,29 +59,58 @@ namespace InverseTorque
         }
 
 
-        float MaxTorqueMult = 3f;
+        float torqueMult = 2.75f;
+        bool LaunchControl = false;
         private async Task HandleInverseTorque()
         {
             Vehicle v = Game.Player.Character.CurrentVehicle;
-            if (Exists(v) && v.CurrentGear>0 && v.IsOnAllWheels && IsControlPressed(0, (int)Control.VehicleAccelerate))
+            if (Exists(v) && v.CurrentGear>0)
             {
                 Vector3 dir = Vector3.Normalize(v.Velocity);
                 Vector3 aim = v.ForwardVector;
-
-                float vDir = GetHeadingFromVector_2d(dir.X, dir.Y);
-                float vAim = GetHeadingFromVector_2d(aim.X, aim.Y);
+                
                 float rAngle = (float)Math.Round(Math.Abs(AngleBetween(dir, aim)), 3);
 
 
-                float initialAngle = GetVehicleHandlingFloat(v.Handle, "CHandlingData", "fTractionCurveLateral");
-                float mult = (float)Math.Round(map(rAngle, initialAngle * 0.1f, initialAngle, 1f, 1f * v.CurrentGear, true), 2);
-                if (mult > MaxTorqueMult) mult = MaxTorqueMult;
+                float penalty = map(v.Velocity.Length(), 0, 4, 0, 1, true);                
+                float grip = GetVehicleMaxTraction(v.Handle);
+                
+                float mult = 1f;
+
+                //float maxMul = (float)Math.Round(map(rAngle, 5f, 40f, 1, 3, true), 2);
+                //if (maxMul > 1) mult = map(v.CurrentRPM, 1f, 0.5f, 1, maxMul, true);
 
 
-                if (mult > 1.0f)
+                if (GetEntitySpeedVector(v.Handle, true).Y > 0f) mult = (float)Math.Round(map(rAngle, 5f, 90f, 1f, (torqueMult * grip) * penalty, true), 2);
+                else mult = (float)Math.Round(map(rAngle, 180f, 90f, 1f, (torqueMult * grip) * penalty, true), 2);
+
+                if (mult > 1.0f) v.EngineTorqueMultiplier = mult;
+                else if(rAngle<5f && LaunchControl)
                 {
-                    v.EngineTorqueMultiplier = mult;
+                    float rwd = 1 - GetVehicleHandlingFloat(v.Handle, "CHandlingData", "fDriveBiasFront");
+
+                    
+                    float gripPerWheel = grip / GetVehicleNumberOfWheels(v.Handle);
+                    float force = GetVehicleAcceleration(v.Handle);
+                    int gear = GetVehicleCurrentGear(v.Handle);
+
+                    if (gear == 1) force *= 3.33f;
+                    //else if (gear == 2) force *= 2.848f;
+                    //else if (gear == 3) force *= 1.253f;
+
+                    if (rwd > 0.5f) gripPerWheel *= map(rwd, 1, 0.5f, 2, 4, true); else map(rwd, 0, 0.5f, 2, 4, true);
+                    float percent = ((gripPerWheel) / force) * 100;
+
+                    mult = (float)Math.Round((percent - 10) / 100, 2); // map(percent, 50, 100, 0f, 1, true);
+                    if (mult < 1.0f)
+                    {
+                        v.EngineTorqueMultiplier = mult;
+                        //DisplayHelpTextTimed(mult + "%", 500);
+                    }
+                    
+
                 }
+
 
 
             }
@@ -102,6 +149,15 @@ namespace InverseTorque
             SetNotificationTextEntry("STRING");
             AddTextComponentString(msg);
             DrawNotification(isImportant, false);
+        }
+
+
+        static public void DisplayHelpTextTimed(string text, int time)
+        {
+            SetTextChatEnabled(false);
+            BeginTextCommandDisplayHelp("STRING");
+            AddTextComponentString(text);
+            DisplayHelpTextFromStringLabel(0, false, true, time);
         }
 
     }

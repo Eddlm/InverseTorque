@@ -12,3 +12,10 @@ C:\Users\Juanjo\source\repos\InverseTorque\InverseTorque\bin\Release\InverseTorq
 C:\Users\Juanjo\source\repos\InverseTorque\InverseTorque\bin\Release\InverseTorque.net.pdb
 C:\Users\Juanjo\source\repos\InverseTorque\InverseTorque\obj\Release\InverseTorque.net.dll
 C:\Users\Juanjo\source\repos\InverseTorque\InverseTorque\obj\Release\InverseTorque.net.pdb
+C:\Users\Juanjo\source\repos\InverseTorque\InverseTorqueFivem\InverseTorque\bin\Release\InverseTorque.net.dll
+C:\Users\Juanjo\source\repos\InverseTorque\InverseTorqueFivem\InverseTorque\bin\Release\InverseTorque.net.pdb
+C:\Users\Juanjo\source\repos\InverseTorque\InverseTorqueFivem\InverseTorque\obj\Release\InverseTorque.csproj.CoreCompileInputs.cache
+C:\Users\Juanjo\source\repos\InverseTorque\InverseTorqueFivem\InverseTorque\obj\Release\InverseTorque.csproj.CopyComplete
+C:\Users\Juanjo\source\repos\InverseTorque\InverseTorqueFivem\InverseTorque\obj\Release\InverseTorque.net.dll
+C:\Users\Juanjo\source\repos\InverseTorque\InverseTorqueFivem\InverseTorque\obj\Release\InverseTorque.net.pdb
+C:\Users\Juanjo\source\repos\InverseTorque\InverseTorqueFivem\InverseTorque\obj\Release\InverseTorque.csprojAssemblyReference.cache
