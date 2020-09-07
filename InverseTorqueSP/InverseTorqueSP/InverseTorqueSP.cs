@@ -58,13 +58,13 @@ public class InverseTorqueSP : Script
             float grip= Function.Call<float>((Hash)0xA132FB5370554DB0, v);
             float angle = Vector3.Angle(v.ForwardVector, v.Velocity.Normalized);
             float mult = 0f;
-            if (angle < 90f)
+            if (angle < 90)
             {
-                mult = (float)Math.Round(map(angle, 5f, 90f, 1f, Scaler * grip, true), 2);
+                mult = (float)Math.Round(map(angle, 5f, 90, 1f, Scaler * grip, true), 2);
             }
             else
             {
-                mult = (float)Math.Round(map(angle, 180f, 90f, 1f, Scaler * grip, true), 2);
+                mult = Scaler * grip; //(float)Math.Round(map(angle, 180f, 90f, 1f, Scaler * grip, true), 2);
             }
             mult *= map(v.Velocity.Length(), 0, 5, 0, 1, true);
 
