@@ -15,3 +15,10 @@ C:\Users\Juanjo\source\repos\InverseTorque\InverseTorqueSP\InverseTorqueSP\bin\x
 C:\Users\Juanjo\source\repos\InverseTorque\InverseTorqueSP\InverseTorqueSP\bin\x64\Release\ScriptHookVDotNet2.xml
 C:\Users\Juanjo\source\repos\InverseTorque\InverseTorqueSP\InverseTorqueSP\obj\x64\Release\InverseTorqueSP.csproj.CopyComplete
 C:\Users\Juanjo\source\repos\InverseTorque\InverseTorqueSP\InverseTorqueSP\obj\x64\Release\InverseTorqueSP.csprojAssemblyReference.cache
+D:\Mis Archivos\Repos\GitHub\InverseTorque\InverseTorqueSP\InverseTorqueSP\bin\x64\Release\InverseTorque.dll
+D:\Mis Archivos\Repos\GitHub\InverseTorque\InverseTorqueSP\InverseTorqueSP\bin\x64\Release\InverseTorque.pdb
+D:\Mis Archivos\Repos\GitHub\InverseTorque\InverseTorqueSP\InverseTorqueSP\obj\x64\Release\InverseTorqueSP.csproj.CoreCompileInputs.cache
+D:\Mis Archivos\Repos\GitHub\InverseTorque\InverseTorqueSP\InverseTorqueSP\obj\x64\Release\InverseTorqueSP.csproj.CopyComplete
+D:\Mis Archivos\Repos\GitHub\InverseTorque\InverseTorqueSP\InverseTorqueSP\obj\x64\Release\InverseTorque.dll
+D:\Mis Archivos\Repos\GitHub\InverseTorque\InverseTorqueSP\InverseTorqueSP\obj\x64\Release\InverseTorque.pdb
+D:\Mis Archivos\Repos\GitHub\InverseTorque\InverseTorqueSP\InverseTorqueSP\obj\x64\Release\InverseTorqueSP.csprojAssemblyReference.cache

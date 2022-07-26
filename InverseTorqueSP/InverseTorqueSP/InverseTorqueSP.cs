@@ -21,12 +21,26 @@ public class InverseTorqueSP : Script
         Tick += OnTick;
         Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
         Settings = ScriptSettings.Load(@"scripts\InverseTorque\Options.ini");
-        Scaler = Settings.GetValue<float>("SETTINGS", "Scaler", 2f);
+        
+        TopMult = Settings.GetValue<float>("SETTINGS", "TopMult", 5f);
+        DeadZone = Settings.GetValue<float>("SETTINGS", "DeadZone", 5f);
+
+        PowerScaling = Settings.GetValue<float>("SETTINGS", "PowerScaling", 1f);
+        GripScaling = Settings.GetValue<float>("SETTINGS", "GripScaling", 1f);
+        GearScaling = Settings.GetValue<float>("SETTINGS", "GearScaling", 1f);
+
     }
 
+    
+    float TopMult = 1f;
+    float DeadZone = 0f;
 
-    float Scaler = 1f;
+    float PowerScaling = 1;
+    float GripScaling = 1;
+    float GearScaling = 1;
+    
     bool InverseTorqueDebug = false;
+    bool Active = true;
     void OnTick(object sender, EventArgs e)
     {
         if (WasCheatStringJustEntered("itdebug"))
@@ -34,43 +48,77 @@ public class InverseTorqueSP : Script
             if (!Settings.GetValue<bool>("SETTINGS", "Enabled", true)) UI.Notify("~y~Inverse Torque is disabled in Options.ini.");
             else InverseTorqueDebug = !InverseTorqueDebug;
         }
-        if (WasCheatStringJustEntered("itscale"))
+        if (WasCheatStringJustEntered("itscale")|| WasCheatStringJustEntered("itmult") || WasCheatStringJustEntered("ittopmult"))
         {
             if (!Settings.GetValue<bool>("SETTINGS", "Enabled", true)) UI.Notify("~y~Inverse Torque is disabled in Options.ini.");
             else
             {
-                UI.Notify("~y~Inverse Torque~w~~n~Current Scaler: ~b~x" + Scaler);
+                UI.Notify("~y~Inverse Torque~w~~n~Current Scaler: ~b~x" + TopMult);
                 string m = Game.GetUserInput(5);
-                if (float.TryParse(m, out Scaler))
+                
+                if (float.TryParse(m, out TopMult))
                 {
-                    UI.Notify("~y~Inverse Torque~w~~n~Scaler set: ~b~x" + Scaler + " ~w~ at 90º");
+                    UI.Notify("~y~Inverse Torque~w~~n~TopMult set: ~b~x" + TopMult + "");
+                }
+                else UI.Notify("~y~Inverse Torque~w~~n~Invalid value: ~o~" + m);
+            }
+        }
+        if (WasCheatStringJustEntered("itdeadzone"))
+        {
+            if (!Settings.GetValue<bool>("SETTINGS", "Enabled", true)) UI.Notify("~y~Inverse Torque is disabled in Options.ini.");
+            else
+            {
+                UI.Notify("~y~Inverse Torque~w~~n~Dead Zone: ~b~" + DeadZone+"º");
+                string m = Game.GetUserInput(5);
+                if (float.TryParse(m, out DeadZone))
+                {
+                    UI.Notify("~y~Inverse Torque~w~~n~Dead Zone set: ~b~" + DeadZone + "º");
                 }
                 else UI.Notify("~y~Inverse Torque~w~~n~Invalid value: ~o~" + m);
             }
 
         }
+        if (WasCheatStringJustEntered("itreload")) LoadSettings();
+        if(WasCheatStringJustEntered("iton")) { Active = true; UI.Notify("~y~Inverse Torque~w~~n~Active."); };
+        if(WasCheatStringJustEntered("itoff")) { Active = false; UI.Notify("~y~Inverse Torque~w~~n~Inactive."); };
 
-        if (!Settings.GetValue<bool>("SETTINGS", "Enabled", true)) return;
+        if (!Active) return;
 
         Vehicle v = Game.Player.Character.CurrentVehicle;
         if (CanWeUse(v)  && v.Driver == Game.Player.Character && v.Model.IsCar &&v.CurrentGear>0) {
             
             float grip= Function.Call<float>((Hash)0xA132FB5370554DB0, v);
-            float angle = Vector3.Angle(v.ForwardVector, v.Velocity.Normalized);
+            float angle = Math.Abs(Vector3.SignedAngle(v.ForwardVector, v.Velocity.Normalized, v.UpVector));
             float mult = 0f;
-            if (angle < 90)
-            {
-                mult = (float)Math.Round(map(angle, 5f, 90, 1f, Scaler * grip, true), 2);
-            }
-            else
-            {
-                mult = Scaler * grip; //(float)Math.Round(map(angle, 180f, 90f, 1f, Scaler * grip, true), 2);
-            }
-            mult *= map(v.Velocity.Length(), 0, 5, 0, 1, true);
 
-            if (mult > 1f) v.EngineTorqueMultiplier = mult; 
-            if(InverseTorqueDebug) if(mult>1.0f) UI.ShowSubtitle("Angle: "+Math.Round(angle,1)+ "º ~n~~b~x" + mult.ToString(), 500); else UI.ShowSubtitle("Angle: " + Math.Round(angle, 1) + "º ~n~~w~x" + mult.ToString(), 500);
+            //float maxMult = map(angle, 5f, 90f, 1f, 10f, true);
+            //mult = map(angle, 5f, 90f, 1f, Scaler * grip, true);
+            
+            if (angle > DeadZone)
+            {
+                //mult = 1 + ((angle-DeadZone) * (Scaler * 0.1f));
+                mult = map(angle, DeadZone, 90f, 1f, TopMult  * (1+(PowerScaling * (1+GetPower(v)))) * (1+(GripScaling*grip)) * (1+(GearScaling*v.CurrentGear)), true);
+            }
+            
 
+            //Reduce when stationary
+            mult *= (float)Math.Round(map(v.Velocity.Length(), 1, 5, 0, 1, true), 2);
+
+            if (mult > 1f) v.EngineTorqueMultiplier = mult;
+
+            mult = (float)Math.Round(mult, 2);
+            if(InverseTorqueDebug)
+            {
+                if (mult > 1.0f)
+                {
+                    UI.ShowSubtitle("Angle: " + Math.Round(angle, 1) + "º ~n~~b~x" + mult.ToString(), 500);
+                }
+                else
+                {
+                    UI.ShowSubtitle("Angle: " + Math.Round(angle, 1) + "º ~n~~w~x" + mult.ToString(), 500);
+                }
+            }
+            
         }
     }
 
@@ -90,7 +138,11 @@ public class InverseTorqueSP : Script
         else return val;
     }
     
-    
+    public float GetPower(Vehicle v)
+    {
+        if (!CanWeUse(v)) return 0;
+        return Function.Call<float>(Hash.GET_VEHICLE_ACCELERATION, v);
+    }
 
     /// TOOLS ///
     void LoadSettings()
@@ -105,6 +157,9 @@ public class InverseTorqueSP : Script
         {
             WarnPlayer(ScriptName + " " + ScriptVer, "SCRIPT RESET", "~g~Towing Service has been cleaned and reset succesfully.");
         }
+
+
+        if (!Settings.GetValue<bool>("SETTINGS", "Enabled", true)) Active = false;
     }
 
     void WarnPlayer(string script_name, string title, string message)
