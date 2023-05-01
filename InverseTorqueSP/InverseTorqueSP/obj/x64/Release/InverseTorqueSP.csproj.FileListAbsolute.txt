@@ -21,4 +21,4 @@ D:\Mis Archivos\Repos\GitHub\InverseTorque\InverseTorqueSP\InverseTorqueSP\obj\x
 D:\Mis Archivos\Repos\GitHub\InverseTorque\InverseTorqueSP\InverseTorqueSP\obj\x64\Release\InverseTorqueSP.csproj.CopyComplete
 D:\Mis Archivos\Repos\GitHub\InverseTorque\InverseTorqueSP\InverseTorqueSP\obj\x64\Release\InverseTorque.dll
 D:\Mis Archivos\Repos\GitHub\InverseTorque\InverseTorqueSP\InverseTorqueSP\obj\x64\Release\InverseTorque.pdb
-D:\Mis Archivos\Repos\GitHub\InverseTorque\InverseTorqueSP\InverseTorqueSP\obj\x64\Release\InverseTorqueSP.csprojAssemblyReference.cache
+D:\Mis Archivos\Repos\GitHub\InverseTorque\InverseTorqueSP\InverseTorqueSP\obj\x64\Release\InverseTorqueSP.csproj.AssemblyReference.cache

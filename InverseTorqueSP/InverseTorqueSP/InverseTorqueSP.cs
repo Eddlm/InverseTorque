@@ -13,8 +13,8 @@ using System.Windows.Forms;
 public class InverseTorqueSP : Script
 {
     string ScriptName = "";
-    string ScriptVer = "0.1";
-    new ScriptSettings Settings;
+    string ScriptVer = "0.15";
+    ScriptSettings Settings;
 
     public InverseTorqueSP()
     {
@@ -43,45 +43,7 @@ public class InverseTorqueSP : Script
     bool Active = true;
     void OnTick(object sender, EventArgs e)
     {
-        if (WasCheatStringJustEntered("itdebug"))
-        {
-            if (!Settings.GetValue<bool>("SETTINGS", "Enabled", true)) UI.Notify("~y~Inverse Torque is disabled in Options.ini.");
-            else InverseTorqueDebug = !InverseTorqueDebug;
-        }
-        if (WasCheatStringJustEntered("itscale")|| WasCheatStringJustEntered("itmult") || WasCheatStringJustEntered("ittopmult"))
-        {
-            if (!Settings.GetValue<bool>("SETTINGS", "Enabled", true)) UI.Notify("~y~Inverse Torque is disabled in Options.ini.");
-            else
-            {
-                UI.Notify("~y~Inverse Torque~w~~n~Current Scaler: ~b~x" + TopMult);
-                string m = Game.GetUserInput(5);
-                
-                if (float.TryParse(m, out TopMult))
-                {
-                    UI.Notify("~y~Inverse Torque~w~~n~TopMult set: ~b~x" + TopMult + "");
-                }
-                else UI.Notify("~y~Inverse Torque~w~~n~Invalid value: ~o~" + m);
-            }
-        }
-        if (WasCheatStringJustEntered("itdeadzone"))
-        {
-            if (!Settings.GetValue<bool>("SETTINGS", "Enabled", true)) UI.Notify("~y~Inverse Torque is disabled in Options.ini.");
-            else
-            {
-                UI.Notify("~y~Inverse Torque~w~~n~Dead Zone: ~b~" + DeadZone+"º");
-                string m = Game.GetUserInput(5);
-                if (float.TryParse(m, out DeadZone))
-                {
-                    UI.Notify("~y~Inverse Torque~w~~n~Dead Zone set: ~b~" + DeadZone + "º");
-                }
-                else UI.Notify("~y~Inverse Torque~w~~n~Invalid value: ~o~" + m);
-            }
-
-        }
-        if (WasCheatStringJustEntered("itreload")) LoadSettings();
-        if(WasCheatStringJustEntered("iton")) { Active = true; UI.Notify("~y~Inverse Torque~w~~n~Active."); };
-        if(WasCheatStringJustEntered("itoff")) { Active = false; UI.Notify("~y~Inverse Torque~w~~n~Inactive."); };
-
+        //Cheats();
         if (!Active) return;
 
         Vehicle v = Game.Player.Character.CurrentVehicle;
@@ -90,16 +52,11 @@ public class InverseTorqueSP : Script
             float grip= Function.Call<float>((Hash)0xA132FB5370554DB0, v);
             float angle = Math.Abs(Vector3.SignedAngle(v.ForwardVector, v.Velocity.Normalized, v.UpVector));
             float mult = 0f;
-
-            //float maxMult = map(angle, 5f, 90f, 1f, 10f, true);
-            //mult = map(angle, 5f, 90f, 1f, Scaler * grip, true);
             
             if (angle > DeadZone)
             {
-                //mult = 1 + ((angle-DeadZone) * (Scaler * 0.1f));
                 mult = map(angle, DeadZone, 90f, 1f, TopMult  * (1+(PowerScaling * (1+GetPower(v)))) * (1+(GripScaling*grip)) * (1+(GearScaling*v.CurrentGear)), true);
-            }
-            
+            }            
 
             //Reduce when stationary
             mult *= (float)Math.Round(map(v.Velocity.Length(), 1, 5, 0, 1, true), 2);
@@ -107,6 +64,7 @@ public class InverseTorqueSP : Script
             if (mult > 1f) v.EngineTorqueMultiplier = mult;
 
             mult = (float)Math.Round(mult, 2);
+
             if(InverseTorqueDebug)
             {
                 if (mult > 1.0f)
@@ -122,7 +80,49 @@ public class InverseTorqueSP : Script
         }
     }
 
-    
+    void Cheats()
+    {
+
+        if (WasCheatStringJustEntered("itdebug"))
+        {
+            if (!Settings.GetValue<bool>("SETTINGS", "Enabled", true)) UI.Notify("~y~Inverse Torque is disabled in Options.ini.");
+            else InverseTorqueDebug = !InverseTorqueDebug;
+        }
+        if (WasCheatStringJustEntered("itscale") || WasCheatStringJustEntered("itmult") || WasCheatStringJustEntered("ittopmult"))
+        {
+            if (!Settings.GetValue<bool>("SETTINGS", "Enabled", true)) UI.Notify("~y~Inverse Torque is disabled in Options.ini.");
+            else
+            {
+                UI.Notify("~y~Inverse Torque~w~~n~Current Scaler: ~b~x" + TopMult);
+                string m = Game.GetUserInput(5);
+
+                if (float.TryParse(m, out TopMult))
+                {
+                    UI.Notify("~y~Inverse Torque~w~~n~TopMult set: ~b~x" + TopMult + "");
+                }
+                else UI.Notify("~y~Inverse Torque~w~~n~Invalid value: ~o~" + m);
+            }
+        }
+        if (WasCheatStringJustEntered("itdeadzone"))
+        {
+            if (!Settings.GetValue<bool>("SETTINGS", "Enabled", true)) UI.Notify("~y~Inverse Torque is disabled in Options.ini.");
+            else
+            {
+                UI.Notify("~y~Inverse Torque~w~~n~Dead Zone: ~b~" + DeadZone + "º");
+                string m = Game.GetUserInput(5);
+                if (float.TryParse(m, out DeadZone))
+                {
+                    UI.Notify("~y~Inverse Torque~w~~n~Dead Zone set: ~b~" + DeadZone + "º");
+                }
+                else UI.Notify("~y~Inverse Torque~w~~n~Invalid value: ~o~" + m);
+            }
+
+        }
+        //if (WasCheatStringJustEntered("itreload")) LoadSettings();
+        if (WasCheatStringJustEntered("iton")) { Active = true; UI.Notify("~y~Inverse Torque~w~~n~Active."); };
+        if (WasCheatStringJustEntered("itoff")) { Active = false; UI.Notify("~y~Inverse Torque~w~~n~Inactive."); };
+
+    }
     public static float map(float x, float in_min, float in_max, float out_min, float out_max, bool clamp = false)
     {
 
@@ -144,14 +144,14 @@ public class InverseTorqueSP : Script
         return Function.Call<float>(Hash.GET_VEHICLE_ACCELERATION, v);
     }
 
-    /// TOOLS ///
+    /// TOOLS /// 
+    /*
     void LoadSettings()
     {
+
         if (File.Exists(@"scripts\\SCRIPTNAME.ini"))
         {
-
             ScriptSettings config = ScriptSettings.Load(@"scripts\SCRIPTNAME.ini");
-            // = config.GetValue<bool>("GENERAL_SETTINGS", "NAME", true);
         }
         else
         {
@@ -161,7 +161,7 @@ public class InverseTorqueSP : Script
 
         if (!Settings.GetValue<bool>("SETTINGS", "Enabled", true)) Active = false;
     }
-
+    */
     void WarnPlayer(string script_name, string title, string message)
     {
         Function.Call(Hash._SET_NOTIFICATION_TEXT_ENTRY, "STRING");
